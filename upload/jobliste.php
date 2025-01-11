@@ -297,7 +297,12 @@ function jobliste_main()
     $counter = "";
     while ($maincat = $db->fetch_array($get_maincats)) {
       $descr = "<div class=\"joblist_descr\">" . $maincat['jm_descr'] . "</div>";
-
+      
+      if ($maincat['jm_subtitle'] != "") {
+        eval("\$job_mainsubtitle = \"" . $templates->get("jobliste_mainsubtitle") . "\";");
+      } else {
+        $job_mainsubtitle = "";
+      }
       $counter++;
       if ($counter == 1) {
         $default = "but_tabdefault";
@@ -655,7 +660,7 @@ function jobliste_setting_array()
 {
   $setting_array = array(
     'jobliste_mem_addSubcat' => array(
-      'title' => 'Kategorien',
+      'title' => 'Arbeitsstellen/Subkategorie',
       'description' => 'Dürfen Mitglieder neue Arbeitsstellen in die Jobliste hinzufügen?',
       'optionscode' => 'yesno',
       'value' => '1', // Default
@@ -778,7 +783,7 @@ function jobliste_add_templates($type = 'install')
             <table width="100%" cellspacing="5" cellpadding="5" class="tborder jobliste">
               <tr>
                 <td valign="top">
-                  <div class="jobliste__title"><h2>Joblist</h2</div>
+                  <div class="jobliste__title"><h2>Jobliste</h2</div>
                   <div class="jobliste__descr">Hier findest du eine Übersicht über mögliche Berufe, sowohl Informationen zu
                     den einzelnen Arbeitstellen. Das Ganze kann auch von euch ergänzt werden. 
                   </div>
@@ -806,14 +811,13 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  //Templates erstellen - alte
   $template[] = array(
     "title" => 'jobliste_addcat_mods',
     "template" => '<div class="jobliste">
         <a onclick="$(\\\'#jobliste__mainmodul\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[add Hauptkategorie]</a>
         <div class="modal" id="jobliste__mainmodul" style="display: none; padding: 10px; margin: auto; text-align: center;">
           <div class="jobadd_select jobadd__item">
-            <h3>Kategorie hinzufügen</h3>
+            <h3>Hauptkategorie hinzufügen</h3>
             <form id="addcat" method="post" action="misc.php?action=jobliste">
               <div class="joblist__formitem kat">
                 <label for="add_cat_title">Titel der Kategorie</label><br>
@@ -859,7 +863,7 @@ function jobliste_add_templates($type = 'install')
             <input type="text" value="{$maincat[\\\'jm_title\\\']}" name="jm_title" id="jm_title{$job_id}" />
             </div>
             <div class="joblist__formitem extra">
-            <label for="jm_subtitle{$job_id}" >Link zu Extraseite</label><br>
+            <label for="jm_subtitle{$job_id}">Subtitel</label><br>
             <input type="text" value="{$maincat[\\\'jm_subtitle\\\']}" name="jm_subtitle" id="jm_subtitle{$job_id}" />
             </div>
             <div class="joblist__formitem sort">
@@ -1012,16 +1016,16 @@ function jobliste_add_templates($type = 'install')
           <form action="misc.php?action=jobliste" id="formaddjob{$sid}" method="post" >
             <div class ="joblist__formitem">	
               <input type="hidden" value="{$sid}" name="a_jobid">
-              <input type="{$mod}" value="{$thisuser}" name="a_uid">
-              <label for="jobabteilung{$sid}">Abteilung</label>
+              <input type="{$mod}" value="{$thisuser}" name="a_uid"><br>
+              <label for="jobabteilung{$sid}">Abteilung</label><br>
               <input type="text" placeholder="z.B Mitarbeiter" name="a_jobabteilung" id="jobabteilung{$sid}" />
             </div>
             <div class ="joblist__formitem">
-              <label for="jobposition{$sid}">Position:</label>
+              <label for="jobposition{$sid}">Position:</label><br>
               <input type="text" placeholder="z.B 3. Lehrjahr" name="a_jobposition" id="jobposition{$sid}" />
             </div>
             <div class ="joblist__formitem">
-              <label for="jobsort{$sid}">Sortierung:</label>
+              <label for="jobsort{$sid}">Sortierung:</label><br>
               <input type="numbers" placeholder="1" name="a_jobsort" id ="jobsort{$sid}"/>
             </div>
             <div class ="joblist__formitem">
@@ -1072,6 +1076,7 @@ function jobliste_add_templates($type = 'install')
     "template" => '<div class="job_show jtabcontent" id="tab_{$job_id}">
           <div class="job_ausgabe">
             <h2 class="job__title">{$job_maintitle}{$jobliste_editmaincat}</h2>
+            {$job_mainsubtitle}
             {$descr}
             {$jobliste_bit}
           </div>
@@ -1153,8 +1158,8 @@ function jobliste_add_templates($type = 'install')
                         <input type="text" placeholder="Restaurant Al Dente" name="add_subcat_title" id="add_subcat_title" />
                       </div>
                       <div class="joblist__formitem link">
-                        <label for="add_subcat_subtitle">Link zu Extraseite</label><br>
-                        <input type="url" placeholder="https://" name="add_subcat_subtitle" id="add_subcat_subtitle" />
+                        <label for="add_subcat_subtitle">Extrainfo</label><br>
+                        <input type="text" placeholder="https://" name="add_subcat_subtitle" id="add_subcat_subtitle" />
                       </div>
                       <div class="joblist__formitem sort">
                         <label for="add_subcat_sort">Sortierung</label><br>
@@ -1316,6 +1321,7 @@ function jobliste_add_templates($type = 'install')
     "version" => "",
     "dateline" => TIME_NOW
   );
+
   $template[] = array(
     "title" => 'jobliste_maincat_links',
     "template" => '<a class="job_tablinks" href="#tab_{$job_id}" >{$job_maintitle}</a>',
@@ -1323,6 +1329,16 @@ function jobliste_add_templates($type = 'install')
     "version" => "",
     "dateline" => TIME_NOW
   );
+
+  $template[] = array(
+    "title" => 'jobliste_mainsubtitle',
+    "template" => '{$maincat[\\\'jm_subtitle\\\']}',
+    "sid" => "-2",
+    "version" => "",
+    "dateline" => TIME_NOW
+  );
+
+  
 
   if ($type == 'update') {
     foreach ($templates as $template) {
@@ -1363,6 +1379,9 @@ function jobliste_stylesheet()
               text-align: center;
           }
 
+          .job__mainsubtitle {
+              text-align: center;
+          }
           .jobliste__tabnav.res_tab {
               display: flex;
               flex-wrap: wrap;
