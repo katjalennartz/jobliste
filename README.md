@@ -4,6 +4,9 @@ Eine Joblist für RPGs. Moderatoren können Hauptkategorien Kategorien und Arbei
 **Achtung das RPG Modul von Lara muss installiert sein.
 [Zum Download](https://github.com/little-evil-genius/rpgstuff_modul)**
 
+** Beschreibung / Erklärung / Screenshots im Wiki:    
+[Zum Wiki](https://github.com/katjalennartz/jobliste/wiki) **
+
 ## Installation
 * Datei aus dem upload Ordner hochladen
 * Installieren
