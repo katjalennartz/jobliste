@@ -621,7 +621,7 @@ function jobliste_database($type = "install")
     `jc_title` varchar(200) NOT NULL,
     `jc_maincat` varchar(200) NOT NULL,
     `jc_sort` int(10) NOT NULL DEFAULT 0,
-    PRIMARY KEY (`jm_id`)
+    PRIMARY KEY (`jc_id`)
     ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
   }
 
