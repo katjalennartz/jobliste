@@ -8,4 +8,4 @@ Eine Joblist für RPGs. Moderatoren können Hauptkategorien Kategorien und Arbei
 * Datei aus dem upload Ordner hochladen
 * Installieren
 * einstellungen vornehmen
-* Jobliste ereichbar über forenadresse/misc.php?action=jobliste
+* Jobliste erreichbar über forenadresse/misc.php?action=jobliste
