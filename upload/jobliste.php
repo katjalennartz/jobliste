@@ -236,7 +236,7 @@ function jobliste_main()
       }
     }
 
-    //Hauotkategorie editieren
+    //Hauptkategorie editieren
     if (isset($mybb->input['editmaintitle'])) {
       $toedit = $mybb->get_input("jm_id", MyBB::INPUT_INT);
 
@@ -252,9 +252,8 @@ function jobliste_main()
       }
     }
 
-    //subkategorie
+    //subkategorie/arbeitsstelle editieren
     if (isset($mybb->input['editsubtitle'])) {
-
       $toedit = $mybb->get_input("js_id", MyBB::INPUT_INT);
       if ($mybb->usergroup['canmodcp'] == 1) {
         $update = array(
@@ -282,7 +281,6 @@ function jobliste_main()
 
     //akzeptieren
     if (isset($mybb->input['accept'])) {
-
       $id = $mybb->get_input("accept", MyBB::INPUT_INT);
       if ($mybb->usergroup['canmodcp'] == 1) {
         $update = array(
@@ -310,7 +308,7 @@ function jobliste_main()
       $job_maintitle = $maincat['jm_title'];
       $job_mainbut = $maincat['jm_title'];
       //Bearbeiten Hauptkategorie
-      // jobliste_editmaincat
+      // Nur Moderatoren können Hauptkategorien erstellen oder editieren
       if ($mybb->usergroup['canmodcp'] == 1) {
         eval("\$jobliste_editmaincat = \"" . $templates->get("jobliste_editmaincat") . "\";");
       } else {
@@ -321,13 +319,8 @@ function jobliste_main()
       $jobliste_bit = "";
 
       //Kategorien holen
-
       $get_jc_cats = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_cat WHERE jc_maincat = {$maincat['jm_id']}");
-
-      // $get_subcats_over = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_subcat WHERE js_mid = {$maincat['jm_id']} AND js_accepted = 1 GROUP BY js_subovercat ORDER BY js_subovercat, js_sort");
-      //arbeitsstellen zu den Kategorien
-
-
+      //Durchggehen und select bauen für editieren 
       while ($subcat_over = $db->fetch_array($get_jc_cats)) {
         $overcat_id = $subcat_over['jc_id'];
         $overcat = $subcat_over['jc_title'];
@@ -339,7 +332,7 @@ function jobliste_main()
           $jobliste_bit_edit_overcat = "";
         }
 
-
+        //Die Arbeitsstellen/subkategorie
         $get_subcats = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_subcat WHERE js_subovercat = '{$overcat_id}' AND js_accepted = 1 ORDER BY js_subovercat, js_sort");
         $jobliste_bitsub = "";
         while ($subcat = $db->fetch_array($get_subcats)) {
@@ -352,13 +345,14 @@ function jobliste_main()
           } else {
             $subtitle = "";
           }
+          //Wenn moderrator, kann explizit eine uid angegeben werden 
           if ($mybb->usergroup['canmodcp'] == 1) {
             $mod = "text";
           } else {
             $mod = "hidden";
           }
 
-          //Bearbeiten der Arbeitsstellen
+          //Bearbeiten der Arbeitsstellen // nur moderatoren
           if ($mybb->usergroup['canmodcp'] == 1) {
             $js_title = htmlspecialchars_uni($subcat['js_title']);
             $js_subtitle = htmlspecialchars_uni($subcat['js_subtitle']);
@@ -385,17 +379,18 @@ function jobliste_main()
           if ($subcat['js_descr'] == "") {
             $js_descr = "";
           }
+
           $get_abteilung = $db->write_query("SELECT je_abteilung FROM " . TABLE_PREFIX . "jl_entry WHERE je_jsid = '" . $sid . "' GROUP BY je_abteilung ORDER BY je_abteilung, je_sort");
           $jobliste_bituser = "";
-          //user einträge
+          //user einträge - dafür erst die Abteilungen, wenn welche angegeben wurden
           while ($abeilungen = $db->fetch_array($get_abteilung)) {
             $abteilung = $abeilungen['je_abteilung'];
-
             $get_jobsuser = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_entry WHERE je_jsid = '" . $sid . "' AND je_abteilung = '{$abteilung}' ORDER BY je_sort, je_position");
             $jobliste_bituserbit = "";
             $username = "";
             $edit = "";
             $delete = "";
+            //die user
             while ($jobsuser = $db->fetch_array($get_jobsuser)) {
               $je_id = $jobsuser['je_id'];
               $userarray = get_user($jobsuser['je_uid']);
@@ -411,7 +406,7 @@ function jobliste_main()
                 $delete = "";
               } else {
                 $username = build_profile_link($userarray['username'], $userarray['uid']);
-                // echo "$username";
+                // wenn moderator oder der gleiche user, kann man sich austragen oder editieren
                 if (($mybb->usergroup['canmodcp'] == 1 || $uid == $mybb->user['uid'])) {
                   $edit = "<a onclick=\"$('#cedit{$je_id}').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== 'undefined' ? modal_zindex : 9999) }); return false;\" style=\"cursor: pointer;\">[e]</a>";
                   $delete =  "<a href=\"misc.php?action=jobliste&do_delete=do_delete&id={$je_id}&uid={$uid}\" onClick=\"return confirm('Möchtest du den Eintrag wirklich löschen?');\">[x]</a>";
@@ -422,13 +417,18 @@ function jobliste_main()
                   $jobliste_bituserbit_edit = "";
                 }
               }
-
               eval("\$jobliste_bituserbit .= \"" . $templates->get("jobliste_bituserbit") . "\";");
             }
             eval("\$jobliste_bituser .= \"" . $templates->get("jobliste_bituser") . "\";");
           }
-          if ($mybb->user['uid'] > 0) {
-            eval("\$addjob = \"" . $templates->get("jobliste_bitsub_add") . "\";");
+          //wenn kein Gast, kann man sich eintragen.
+          if ($mybb->user['uid'] != 0) {
+            //user dürfen sich selbst eintragen - oder moderatotr
+            if ($mybb->settings['jobliste_mem_self'] == 1 || $mybb->usergroup['canmodcp'] == 1) {
+              eval("\$addjob = \"" . $templates->get("jobliste_bitsub_add") . "\";");
+            } else {
+              $addjob = "";
+            }
           } else {
             $addjob = "";
           }
@@ -444,9 +444,6 @@ function jobliste_main()
       } else {
         eval("\$jobliste_tabbit .= \"" . $templates->get("jobliste_maincat_links") . "\";");
       }
-
-      // jobliste_bit
-
     }
 
     $get_subcats_not = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_subcat WHERE js_accepted = 0 ORDER BY js_sort");
@@ -458,23 +455,31 @@ function jobliste_main()
       $fromuser = get_user($subcat_not['js_user']);
       eval("\$jobliste_modbit .= \"" . $templates->get("jobliste_modbit") . "\";");
     }
-    //formular add subca
 
+    //formular Subkategorie/Arbeitsstelle
     if ($mybb->user['uid'] != 0) {
-      eval("\$jobliste_addsubcat .= \"" . $templates->get("jobliste_addsubcat") . "\";");
+      if ($mybb->settings['jobliste_mem_addSubcat'] == 1 || $mybb->usergroup['canmodcp'] == 1) {
+        eval("\$jobliste_addsubcat .= \"" . $templates->get("jobliste_addsubcat") . "\";");
+      } else {
+        $jobliste_addsubcat = "<br/>";
+      }
     } else {
       $jobliste_addsubcat = "<br/>";
     }
 
+    //Hinzufügen Kategorie
     if ($mybb->usergroup['canmodcp'] == 1) {
       eval("\$jobliste_addcat = \"" . $templates->get("jobliste_addcat") . "\";");
     } else {
       $jobliste_addcat = "";
     }
+
     //javascript for tabbing
     if ($mybb->settings['jobliste_tabs'] == 1) {
       eval("\$jobliste_tab_js = \"" . $templates->get("jobliste_tab_js") . "\";");
     }
+
+    //Moderationsstuff
     if ($mybb->usergroup['canmodcp'] == 1 && $db->num_rows($get_subcats_not) > 0) {
       eval("\$joblist_modstuff .= \"" . $templates->get("jobliste_mod") . "\";");
     }
@@ -588,7 +593,6 @@ function jobliste_online_location($plugin_array)
 
 
 /*Install Funktionen*/
-
 function jobliste_database($type = "install")
 {
   global $db;
