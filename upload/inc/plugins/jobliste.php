@@ -168,6 +168,7 @@ function jobliste_main()
 
 
     $build_select = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_cat");
+
     $joblist_select_cat_add = "<select name=\"job_jc_cat\" id=\"job_jc_cat\">";
     $jc_selected = "";
     while ($jc_cat = $db->fetch_array($build_select)) {
@@ -802,7 +803,7 @@ function jobliste_add_templates($type = 'install')
             <table width="100%" cellspacing="5" cellpadding="5" class="tborder jobliste">
               <tr>
                 <td valign="top">
-                  <div class="jobliste__title"><h2>Jobliste</h2</div>
+                  <div class="jobliste__title"><h2>Jobliste</h2></div>
                   <div class="jobliste__descr">Hier findest du eine Übersicht über mögliche Berufe, sowohl Informationen zu
                     den einzelnen Arbeitstellen. Das Ganze kann auch von euch ergänzt werden. 
                   </div>
