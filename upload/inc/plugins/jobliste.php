@@ -156,23 +156,21 @@ function jobliste_main()
       redirect("misc.php?action=jobliste");
     }
 
-    ///vorhandene kategorien bauen für tabs und select
+    ///vorhandene Hauptkategorien bauen für tabs und select
     $get_cats = $db->simple_select("jl_maincat", "*", "", array('order_by' => 'jm_sort'));
     $hauptkategorie = "<select name=\"jobcat\" id=\"jobcat\">";
-
     while ($cat = $db->fetch_array($get_cats)) {
       $hauptkategorie .= "<option value=\"{$cat['jm_id']}\">{$cat['jm_title']}</option>";
     }
-
     $hauptkategorie .= "</select>";
 
-
+    ///vorhandene Kategorien bauen für tabs und select
     $build_select = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_cat");
-
     $joblist_select_cat_add = "<select name=\"job_jc_cat\" id=\"job_jc_cat\">";
     $jc_selected = "";
     while ($jc_cat = $db->fetch_array($build_select)) {
-      $joblist_select_cat_add .= "<option value=\"{$jc_cat['jc_id']}\">{$jc_cat['jc_title']}</option>";
+      $maincat = $db->fetch_field($db->write_query("SELECT jm_title FROM " . TABLE_PREFIX . "jl_maincat WHERE jm_id = '{$jc_cat['jc_maincat']}'"), "jm_title");
+      $joblist_select_cat_add .= "<option value=\"{$jc_cat['jc_id']}\">{$jc_cat['jc_title']} ({$maincat})</option>";
     }
     $joblist_select_cat_add .= "</select>";
 
@@ -263,10 +261,12 @@ function jobliste_main()
     if (isset($mybb->input['editcat'])) {
       $toedit = $mybb->get_input("jc_id", MyBB::INPUT_INT);
 
+
       if ($mybb->usergroup['canmodcp'] == 1) {
         $update = array(
           "jc_title" => $db->escape_string($mybb->get_input("jc_title", MyBB::INPUT_STRING)),
           "jc_sort" => $mybb->get_input("jc_sort", MyBB::INPUT_INT),
+          "jc_maincat" => $mybb->get_input("jobcat_editmaincat", MyBB::INPUT_INT),
         );
         $db->update_query("jl_cat", $update, "jc_id = '{$toedit}'");
         redirect("misc.php?action=jobliste");
@@ -349,6 +349,21 @@ function jobliste_main()
       //Durchggehen und select bauen für editieren 
       while ($subcat_over = $db->fetch_array($get_jc_cats)) {
         $overcat_id = $subcat_over['jc_id'];
+
+        ///vorhandene Hauptkategorien bauen für tabs und select
+        $get_cats = $db->simple_select("jl_maincat", "*", "", array('order_by' => 'jm_sort'));
+        $hauptkategorie_edit = "<select name=\"jobcat_editmaincat\" id=\"jobcat{$overcat_id}\">";
+        while ($cat = $db->fetch_array($get_cats)) {
+          if ($cat['jm_id'] == $subcat_over['jc_maincat']) {
+            $selectedmain = " selected";
+          } else {
+            $selectedmain = "";
+          }
+          $hauptkategorie_edit .= "<option value=\"{$cat['jm_id']}\" {$selectedmain}>{$cat['jm_title']}</option>";
+        }
+        $hauptkategorie_edit .= "</select>";
+
+
         $overcat = $subcat_over['jc_title'];
         $overcat_sort = $subcat_over['jc_sort'];
         $jobliste_bit_edit_overcat = "";
@@ -386,13 +401,16 @@ function jobliste_main()
             $build_select = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_cat");
             $joblist_select_cat = "<select name=\"job_jc_cat\" id=\"job_jc_cat\">";
             $jc_selected = "";
+            $maincat = "";
             while ($jc_cat = $db->fetch_array($build_select)) {
+              $maincat = $db->fetch_field($db->write_query("SELECT jm_title FROM " . TABLE_PREFIX . "jl_maincat WHERE jm_id = '{$jc_cat['jc_maincat']}'"), "jm_title");
+
               if ($subcat['js_subovercat'] == $jc_cat['jc_id']) {
                 $jc_selected = " SELECTED";
               } else {
                 $jc_selected = "";
               }
-              $joblist_select_cat .= "<option value=\"{$jc_cat['jc_id']}\" {$jc_selected}>{$jc_cat['jc_title']}</option>";
+              $joblist_select_cat .= "<option value=\"{$jc_cat['jc_id']}\" {$jc_selected}>{$jc_cat['jc_title']} ($maincat)</option>";
             }
             $joblist_select_cat .= "</select>";
 
@@ -952,23 +970,23 @@ function jobliste_add_templates($type = 'install')
 	<form action="misc.php?action=jobliste" id="formeditsub{$sid}" method="post" >
 		<div class ="joblist__formitem">	
 			<input type="hidden" value="{$sid}" name="js_id">
-			<label for="js_title{$sid}">Name</label>
+			<label for="js_title{$sid}">Name</label><br>
       <input type="text" value="{$js_title}" name="js_title"  id="js_title{$sid}" />
 		</div>
 		<div class="joblist__formitem">
-			<label for="js_subtitle{$sid}">Link (nur Url)</label>
+			<label for="js_subtitle{$sid}">Link (nur Url)</label><br>
 			<input type="url" value="{$js_subtitle}" name="js_subtitle" id="js_subtitle{$sid}" />
 		</div>
 		<div class="joblist__formitem">
-			<label for="js_sort{$sid}">Reihenfolge</label>
+			<label for="js_sort{$sid}">Reihenfolge</label><br>
 			<input type="number" value="{$subcat[\\\'js_sort\\\']}" name="js_sort" id="js_sort{$sid}" />
 		</div>
 		<div class="joblist__formitem">
-			<label>Kategorie</label>
+			<label>Kategorie</label><br>
 			{$joblist_select_cat}
 		</div>
 		<div class="joblist__formitem">
-			<label for="js_descr{$sid}">Beschreibung</label>
+			<label for="js_descr{$sid}">Beschreibung</label><br>
 			<textarea  name="js_descr" id="js_descr{$sid}" />{$subcat[\\\'js_descr\\\']}</textarea>
 		</div>
 		<div class ="joblist__formitem">
