@@ -151,7 +151,7 @@ function jobliste_main()
         "jc_maincat" => $mybb->get_input("add_jccat_maincat", MyBB::INPUT_INT),
         "jc_sort" => $mybb->get_input("add_jccat_sort", MyBB::INPUT_INT)
       );
-      $db->insert_query("jc_cat", $insert);
+      $db->insert_query("jl_cat", $insert);
       redirect("misc.php?action=jobliste");
     }
 
@@ -1206,7 +1206,7 @@ function jobliste_add_templates($type = 'install')
                     <input type="number" placeholder="0" name="add_jccat_sort" id="add_jccat_sort" />
                   </div>
                   <div class="joblist__formitem sendbutton">
-                    <button class="bl-btn" type="submit" form="addcat" value="Submit" name="jobcat_jc_send">Submit</button>
+                    <button class="bl-btn" type="submit" value="Submit" name="jobcat_jc_send">Submit</button>
                   </div>
                 </form>
               </div>
