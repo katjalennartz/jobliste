@@ -17,7 +17,7 @@ function jobliste_info()
     "website" => "https://github.com/katjalennartz",
     "author" => "risuena",
     "authorsite" => "https://github.com/katjalennartz",
-    "version" => "",
+    "version" => "1.0",
     "compatibility" => "18*"
   );
 }
@@ -112,12 +112,12 @@ function jobliste_main()
     $thisuser = $mybb->user['uid'];
 
     //just working for my own forum - ignore it :D 
-    if ($db->table_exists("generallists")) {
-      $lists_menuentry = generallists_buildmenu();
-      eval("\$generallists_menu .= \"" . $templates->get("generallists_menu") . "\";");
-      $list['name'] = "Jobliste";
-      $list['text'] = "";
-    }
+    // if ($db->table_exists("generallists")) {
+    //   $lists_menuentry = generallists_buildmenu();
+    //   eval("\$generallists_menu .= \"" . $templates->get("generallists_menu") . "\";");
+    //   $list['name'] = "Jobliste";
+    //   $list['text'] = "";
+    // }
 
     //Hinzufügen der Breadcrumb
     add_breadcrumb("Jobliste", "misc.php?action=jobliste");
@@ -771,7 +771,7 @@ function jobliste_add_templates($type = 'install')
   }
 
   //Templates erstellen
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_main',
     "template" => '<html>
           <head>
@@ -806,12 +806,12 @@ function jobliste_add_templates($type = 'install')
 
           </body>
         </html>',
-    "sid" => "-2",
-    "version" => "",
-    "dateline" => TIME_NOW
+        "sid" => "-2",
+        "version" => "",
+        "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_addcat_mods',
     "template" => '<div class="jobliste">
         <a onclick="$(\\\'#jobliste__mainmodul\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[add Hauptkategorie]</a>
@@ -849,7 +849,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_editmaincat',
     "template" => '<span class="smalltext">
           <a onclick="$(\\\'#maincatedit{$job_id}\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[e]</a>
@@ -885,7 +885,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bit_edit_overcat',
     "template" => '<span class="smalltext">
               <a onclick="$(\\\'#subcatedit{$overcat_id}\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[e]</a> 
@@ -909,7 +909,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bituserbit_subtitle',
     "template" => '<div class="jl_subtitle"><a href="{$subcat[\\\'js_subtitle\\\']}">[klick für mehr Infos]</a></div>
       ',
@@ -918,8 +918,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  //TODO Select für überkategorien
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bitsub_edit',
     "template" => '<span class="smalltext">
 	<a onclick="$(\\\'#subcatedit{$sid}\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[e]</a> 
@@ -959,7 +958,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bituserbit_edit',
     "template" => '{$edit} {$delete} 
             <div class="modal editscname" id="cedit{$je_id}" style="display: none; padding: 10px; margin: auto; text-align: center;">
@@ -989,7 +988,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bituserbit',
     "template" => '<div class="jobuser-entry__item">{$username} {$position} {$jobliste_bituserbit_edit}</div>',
     "sid" => "-2",
@@ -997,7 +996,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bituser',
     "template" => '<div class="jobliste-user__item jobuser">
         <div class="jobuser__item abteilung">{$abteilung}</div>
@@ -1009,7 +1008,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bitsub_add',
     "template" => '<i class="fa-solid fa-user-plus"></i> <a onclick="$(\\\'#useradd{$sid}\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[add]</a>
         <div class="modal editscname" id="useradd{$sid}" style="display: none; padding: 10px; margin: auto; text-align: center;">
@@ -1039,7 +1038,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bitsub',
     "template" => '<div class="job_bit__item">
             <h3 class="job_bit__title">{$title_sub}{$jobliste_bitsub_edit}</h3>
@@ -1058,7 +1057,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_bit',
     "template" => '<div class="job_bit">
         <h2 class="job_bit__heading">{$overcat}{$jobliste_bit_edit_overcat}</h2>
@@ -1071,7 +1070,7 @@ function jobliste_add_templates($type = 'install')
   );
 
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_typ',
     "template" => '<div class="job_show jtabcontent" id="tab_{$job_id}">
           <div class="job_ausgabe">
@@ -1087,7 +1086,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_typ',
     "template" => '<button class="job_tablinks bl-btn" onclick="openJobid(event, \\\'tab_{$job_id}\\\')"  id="{$default}" >{$job_maintitle}</button>',
     "sid" => "-2",
@@ -1095,7 +1094,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_modbit',
     "template" => '<div class="job_show_mod__item">
       <a id="{$anker}"></a>Eintrag für <strong>{$overcattitle}</strong> von {$fromuser[\\\'username\\\']}.<br/>
@@ -1137,7 +1136,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_addsubcat',
     "template" => '<div class="jobadd">
               <a onclick="$(\\\'#divaddsubcat\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[Arbeitsstelle hinzufügen]</a>
@@ -1182,7 +1181,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_addcat',
     "template" => '<div class="jobadd">
             <a onclick="$(\\\'#add_jc_cat\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[Kategorie hinzufügen]</a>
@@ -1215,7 +1214,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_tab_js',
     "template" => '<script>
           function openJobid(evt, jobid) {
@@ -1248,7 +1247,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_mod',
     "template" => '<div class="job_show_mod__item">
             <a id="{$anker}"></a>Eintrag für <strong>{$overcattitle}</strong> von {$fromuser[\\\'username\\\']}.<br/>
@@ -1291,7 +1290,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_indexmodbit',
     "template" => '<div class="scenetracker_reminder item"><span>Eintrag für <strong>{$overcattitle}</strong> von {$fromuser[\\\'username\\\']}. <br>
 	<a href="misc.php?action=jobliste#{$anker}">[überprüfen und freischalten]</a></span>
@@ -1302,7 +1301,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_indexmod',
     "template" => '<div class="reservations_index pm_alert">
         <strong>Neue Eintrag Jobliste:</strong>
@@ -1314,7 +1313,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_tabbit',
     "template" => '<button class="job_tablinks " onclick="openJobid(event, \\\'tab_{$job_id}\\\')"  id="{$default}" >{$job_maintitle}</button>',
     "sid" => "-2",
@@ -1322,7 +1321,7 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_maincat_links',
     "template" => '<a class="job_tablinks" href="#tab_{$job_id}" >{$job_maintitle}</a>',
     "sid" => "-2",
@@ -1330,16 +1329,14 @@ function jobliste_add_templates($type = 'install')
     "dateline" => TIME_NOW
   );
 
-  $template[] = array(
+  $templates[] = array(
     "title" => 'jobliste_mainsubtitle',
     "template" => '{$maincat[\\\'jm_subtitle\\\']}',
     "sid" => "-2",
     "version" => "",
     "dateline" => TIME_NOW
   );
-
   
-
   if ($type == 'update') {
     foreach ($templates as $template) {
       $query = $db->simple_select("templates", "tid, template", "title = '" . $template['title'] . "' AND sid = '-2'");
@@ -1357,6 +1354,7 @@ function jobliste_add_templates($type = 'install')
       }
     }
   } else {
+
     foreach ($templates as $template) {
       $check = $db->num_rows($db->simple_select("templates", "title", "title = '" . $template['title'] . "'"));
       if ($check == 0) {
