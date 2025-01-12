@@ -110,7 +110,10 @@ function jobliste_main()
   //Jobseite
   if ($mybb->get_input('action', MyBB::INPUT_STRING) == "jobliste") {
     $thisuser = $mybb->user['uid'];
-
+    $jobliste_typ = "";
+    $joblist_modstuff = "";
+    $jobliste_tabbit = "";
+    $jobliste_add = "";
     //just working for my own forum - ignore it :D 
     // if ($db->table_exists("generallists")) {
     //   $lists_menuentry = generallists_buildmenu();
@@ -129,12 +132,14 @@ function jobliste_main()
 
     //Mainkategorie/Tyo erstellen
     if (isset($mybb->input['jobcat_send']) && $mybb->usergroup['canmodcp'] == 1) {
+
       $insert = array(
         "jm_title" => $db->escape_string($mybb->get_input("add_cat_title", MyBB::INPUT_STRING)),
         "jm_subtitle" => $db->escape_string($mybb->get_input("add_cat_subtitle", MyBB::INPUT_STRING)),
         "jm_descr" => $db->escape_string($mybb->get_input("add_cat_descr", MyBB::INPUT_STRING)),
         "jm_sort" => $mybb->get_input("add_cat_sort", MyBB::INPUT_INT)
       );
+
       $db->insert_query("jl_maincat", $insert);
       redirect("misc.php?action=jobliste");
     }
@@ -297,7 +302,7 @@ function jobliste_main()
     $counter = "";
     while ($maincat = $db->fetch_array($get_maincats)) {
       $descr = "<div class=\"joblist_descr\">" . $maincat['jm_descr'] . "</div>";
-      
+
       if ($maincat['jm_subtitle'] != "") {
         eval("\$job_mainsubtitle = \"" . $templates->get("jobliste_mainsubtitle") . "\";");
       } else {
@@ -749,7 +754,6 @@ function jobliste_add_settings($type = "install")
       }
     }
   }
-
   rebuild_settings();
 }
 
@@ -806,9 +810,9 @@ function jobliste_add_templates($type = 'install')
 
           </body>
         </html>',
-        "sid" => "-2",
-        "version" => "",
-        "dateline" => TIME_NOW
+    "sid" => "-2",
+    "version" => "",
+    "dateline" => TIME_NOW
   );
 
   $templates[] = array(
@@ -833,13 +837,13 @@ function jobliste_add_templates($type = 'install')
               </div>
               <div class="joblist__formitem descr">
                 <label for="anschlusstxt">Beschreibung</label><br>
-                <textarea placeholder="Hier die Beschreibung zur Kategorie." name="add_cat_descr" id="anschlusstxt" cols="40" rows="3">
-                </textarea>
+                <textarea placeholder="Hier die Beschreibung zur Kategorie." name="add_cat_descr" id="anschlusstxt" cols="40" rows="3"></textarea>
+              </div>
                 <div class="joblist__formitem descr">
-                  <button class="bl-btn" type="submit" form="addcat" value="Submit" name="jobcat_send">Submit</button>
+                  <button class="bl-btn" type="submit" value="Submit" name="jobcat_send">Submit</button>
                 </div>
                 </form>
-              </div>
+              
           </div>
         </div>
       </div>
@@ -1336,7 +1340,7 @@ function jobliste_add_templates($type = 'install')
     "version" => "",
     "dateline" => TIME_NOW
   );
-  
+
   if ($type == 'update') {
     foreach ($templates as $template) {
       $query = $db->simple_select("templates", "tid, template", "title = '" . $template['title'] . "' AND sid = '-2'");
