@@ -148,7 +148,7 @@ function jobliste_main()
     if (isset($mybb->input['jobcat_jc_send']) && $mybb->usergroup['canmodcp'] == 1) {
       $insert = array(
         "jc_title" => $db->escape_string($mybb->get_input("add_jccat_title", MyBB::INPUT_STRING)),
-        "jc_maincat" => $mybb->get_input("add_jccat_maincat", MyBB::INPUT_INT),
+        "jc_maincat" => $mybb->get_input("jobcat", MyBB::INPUT_INT),
         "jc_sort" => $mybb->get_input("add_jccat_sort", MyBB::INPUT_INT)
       );
       $db->insert_query("jl_cat", $insert);
@@ -187,7 +187,7 @@ function jobliste_main()
         "js_mid" => $mybb->get_input("jobcat", MyBB::INPUT_INT),
         "js_title" => $db->escape_string($mybb->get_input("add_subcat_title", MyBB::INPUT_STRING)),
         "js_subtitle" => $db->escape_string($mybb->get_input("add_subcat_subtitle", MyBB::INPUT_STRING)),
-        "js_subovercat" => $db->escape_string($mybb->get_input("add_oversubcat_subtitle", MyBB::INPUT_STRING)),
+        "js_subovercat" => $db->escape_string($mybb->get_input("job_jc_cat", MyBB::INPUT_STRING)),
         "js_descr" => $db->escape_string($mybb->get_input("add_subcat_descr", MyBB::INPUT_STRING)),
         "js_accepted" => $accepted,
         "js_sort" => $mybb->get_input("add_subcat_sort", MyBB::INPUT_INT),
