@@ -258,6 +258,20 @@ function jobliste_main()
       }
     }
 
+    //Kategorie editieren
+    if (isset($mybb->input['editcat'])) {
+      $toedit = $mybb->get_input("jm_id", MyBB::INPUT_INT);
+
+      if ($mybb->usergroup['canmodcp'] == 1) {
+        $update = array(
+          "jc_title" => $db->escape_string($mybb->get_input("jc_title", MyBB::INPUT_STRING)),
+          "jc_sort" => $mybb->get_input("jc_sort", MyBB::INPUT_INT),
+        );
+        $db->update_query("jl_cat", $update, "jc_id = {$toedit}");
+        redirect("misc.php?action=jobliste");
+      }
+    }
+
     //subkategorie/arbeitsstelle editieren
     if (isset($mybb->input['editsubtitle'])) {
       $toedit = $mybb->get_input("js_id", MyBB::INPUT_INT);
@@ -893,16 +907,20 @@ function jobliste_add_templates($type = 'install')
   $templates[] = array(
     "title" => 'jobliste_bit_edit_overcat',
     "template" => '<span class="smalltext">
-              <a onclick="$(\\\'#subcatedit{$overcat_id}\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[e]</a> 
+              <a onclick="$(\\\'#subcatedit_jc{$overcat_id}\\\').modal({ fadeDuration: 250, keepelement: true, zIndex: (typeof modal_zindex !== \\\'undefined\\\' ? modal_zindex : 9999) }); return false;" style="cursor: pointer;">[e]</a> 
                 <a href="misc.php?action=jobliste&deletecat={$overcat_id}" onClick="return confirm(\\\'Möchtest du die Kategorie wirklich löschen? Dann werden auch die zugeordnten Jobs nicht mehr angezeigt!\\\');">[d]</a>
             </span>
 
-            <div class="modal editscname" id="subcatedit{$overcat_id}" style="display: none; padding: 10px; margin: auto; text-align: center;">
+            <div class="modal editscname" id="subcatedit_jc{$overcat_id}" style="display: none; padding: 10px; margin: auto; text-align: center;">
               <form action="misc.php?action=jobliste" id="formeditcat{$overcat_id}" method="post" >
                 <div class="joblist__formitem">	
-                  <input type="hidden" value="{$jcid}" name="jc_id">
-                  <label for="jc_title{$overcat_id}">Name</label>
-                  <input type="text" value="{$overcat}" name="jc_title"  id="jc_title{$overcat_id}" />
+                  <input type="hidden" value="{$overcat_id}" name="jc_id">
+                  <label for="jc_title{$overcat_id}">Name</label><br>
+                  <input type="text" value="{$overcat}" name="jc_title" id="jc_title{$overcat_id}" />
+                </div>
+                <div class="joblist__formitem">	
+                  <label for="jc_sort{$overcat_id}">Anzeigenreihenfolge</label><br>
+                  <input type="number" value="{$overcat}" name="jc_sort"  id="jc_sort{$overcat_id}" />
                 </div>
               <div class ="joblist__formitem">
                 <input form="formeditcat{$overcat_id}" type="submit" name="editcat" value="Speichern" />
