@@ -824,8 +824,8 @@ function jobliste_add_templates($type = 'install')
             <h3>Hauptkategorie hinzufügen</h3>
             <form id="addcat" method="post" action="misc.php?action=jobliste">
               <div class="joblist__formitem kat">
-                <label for="add_cat_title">Titel der Kategorie</label><br>
-                <input type="text" placeholder="Kategorie Title" name="add_cat_title" id="add_cat_title" required/>
+                <label for="add_cat_title">Titel der Hauptkategorie</label><br>
+                <input type="text" placeholder="Hauptkategorie Title" name="add_cat_title" id="add_cat_title" required/>
               </div>
               <div class="joblist__formitem subkat">
                 <label for="add_cat_subtitle">Subtitel der Kategorie</label><br>
