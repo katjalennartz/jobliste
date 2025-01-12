@@ -931,7 +931,11 @@ function jobliste_add_templates($type = 'install')
             </span>
             <div class="modal editscname" id="subcatedit_jc{$overcat_id}" style="display: none; padding: 10px; margin: auto; text-align: center;">
               <form action="misc.php?action=jobliste" id="formeditcat{$overcat_id}" method="post" >
-                <div class="joblist__formitem">	
+              	<div class="joblist__formitem">
+                <label for="jobcat{$overcat_id}">Hauptkategorie</label><br>
+                {$hauptkategorie_edit}
+                </div>  
+              <div class="joblist__formitem">	
                   <input type="hidden" value="{$overcat_id}" name="jc_id">
                   <label for="jc_title{$overcat_id}">Name</label><br>
                   <input type="text" value="{$overcat}" name="jc_title" id="jc_title{$overcat_id}" />
