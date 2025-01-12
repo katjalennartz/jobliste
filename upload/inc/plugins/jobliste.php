@@ -114,6 +114,7 @@ function jobliste_main()
     $joblist_modstuff = "";
     $jobliste_tabbit = "";
     $jobliste_add = "";
+    $jcid = "";
     //just working for my own forum - ignore it :D 
     // if ($db->table_exists("generallists")) {
     //   $lists_menuentry = generallists_buildmenu();
