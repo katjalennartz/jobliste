@@ -187,7 +187,7 @@ function jobliste_main()
         "js_mid" => $mybb->get_input("jobcat", MyBB::INPUT_INT),
         "js_title" => $db->escape_string($mybb->get_input("add_subcat_title", MyBB::INPUT_STRING)),
         "js_subtitle" => $db->escape_string($mybb->get_input("add_subcat_subtitle", MyBB::INPUT_STRING)),
-        "js_subovercat" => $db->escape_string($mybb->get_input("job_jc_cat", MyBB::INPUT_STRING)),
+        "js_subovercat" => $mybb->get_input("job_jc_cat"),
         "js_descr" => $db->escape_string($mybb->get_input("add_subcat_descr", MyBB::INPUT_STRING)),
         "js_accepted" => $accepted,
         "js_sort" => $mybb->get_input("add_subcat_sort", MyBB::INPUT_INT),
@@ -275,14 +275,17 @@ function jobliste_main()
 
     //subkategorie/arbeitsstelle editieren
     if (isset($mybb->input['editsubtitle'])) {
+      $cattoedit = $mybb->get_input("job_jc_cat", MyBB::INPUT_INT);
+      $maincat = $db->fetch_field($db->simple_select("jl_cat", "jc_maincat", "jc_id = '{$cattoedit}'"), "jc_maincat");
       $toedit = $mybb->get_input("js_id", MyBB::INPUT_INT);
       if ($mybb->usergroup['canmodcp'] == 1) {
         $update = array(
-          "js_title" => $mybb->get_input("js_title", MyBB::INPUT_STRING),
-          "js_subtitle" => $mybb->get_input("js_subtitle", MyBB::INPUT_STRING),
-          "js_subovercat" => $mybb->get_input("js_subovercat", MyBB::INPUT_STRING),
+          "js_mid" => $maincat,
+          "js_title" => $db->escape_string($mybb->get_input("js_title", MyBB::INPUT_STRING)),
+          "js_subtitle" => $db->escape_string($mybb->get_input("js_subtitle", MyBB::INPUT_STRING)),
+          "js_subovercat" => $mybb->get_input("job_jc_cat", MyBB::INPUT_INT),
           "js_sort" => $mybb->get_input("js_sort", MyBB::INPUT_INT),
-          "js_descr" => $mybb->get_input("js_descr", MyBB::INPUT_STRING),
+          "js_descr" => $db->escape_string($mybb->get_input("js_descr", MyBB::INPUT_STRING)),
         );
         $db->update_query("jl_subcat", $update, "js_id = {$toedit}");
         redirect("misc.php?action=jobliste");
