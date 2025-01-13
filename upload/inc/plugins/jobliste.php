@@ -345,7 +345,7 @@ function jobliste_main()
       $jobliste_bit = "";
 
       //Kategorien holen
-      $get_jc_cats = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_cat WHERE jc_maincat = {$maincat['jm_id']}");
+      $get_jc_cats = $db->write_query("SELECT * FROM " . TABLE_PREFIX . "jl_cat WHERE jc_maincat = {$maincat['jm_id']} ORDER BY jc_sort");
       //Durchggehen und select bauen für editieren 
       while ($subcat_over = $db->fetch_array($get_jc_cats)) {
         $overcat_id = $subcat_over['jc_id'];
