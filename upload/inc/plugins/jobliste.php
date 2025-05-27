@@ -1340,7 +1340,7 @@ function jobliste_add_templates($type = 'install')
 
   $templates[] = array(
     "title" => 'jobliste_indexmodbit',
-    "template" => '<div class="scenetracker_reminder item"><span>Eintrag für <strong>{$overcattitle}</strong> von {$fromuser[\\\'username\\\']}. <br>
+    "template" => '<div class="jobliste_reminder item"><span>Eintrag für <strong>{$overcattitle}</strong> von {$fromuser[\\\'username\\\']}. <br>
 	<a href="misc.php?action=jobliste#{$anker}">[überprüfen und freischalten]</a></span>
 </div>
   ',
@@ -1557,20 +1557,20 @@ function jobliste_is_updated()
   }
 
   //Testen ob im CSS etwas fehlt
-  $update_data_all = scenetracker_stylesheet_update();
+  $update_data_all = jobliste_stylesheet_update();
   //alle Themes bekommen
   $theme_query = $db->simple_select('themes', 'tid, name');
   while ($theme = $db->fetch_array($theme_query)) {
     //wenn im style nicht vorhanden, dann gesamtes css hinzufügen
-    $templatequery = $db->write_query("SELECT * FROM `" . TABLE_PREFIX . "themestylesheets` where tid = '{$theme['tid']}' and name ='scenetracker.css'");
-    //scenetracker.css ist in keinem style nicht vorhanden
+    $templatequery = $db->write_query("SELECT * FROM `" . TABLE_PREFIX . "themestylesheets` where tid = '{$theme['tid']}' and name ='jobliste.css'");
+    //jobliste.css ist in keinem style nicht vorhanden
     if ($db->num_rows($templatequery) == 0) {
       echo ("Nicht im {$theme['tid']} vorhanden <br>");
       return false;
     } else {
-      //scenetracker.css ist in einem style nicht vorhanden
+      //jobliste.css ist in einem style nicht vorhanden
       //css ist vorhanden, testen ob alle updatestrings vorhanden sind
-      $update_data_all = scenetracker_stylesheet_update();
+      $update_data_all = jobliste_stylesheet_update();
       //array durchgehen mit eventuell hinzuzufügenden strings
       foreach ($update_data_all as $update_data) {
         //String bei dem getestet wird ob er im alten css vorhanden ist
@@ -1578,7 +1578,7 @@ function jobliste_is_updated()
         //updatestring darf nicht leer sein
         if (!empty($update_string)) {
           //checken ob updatestring in css vorhanden ist - dann muss nichts getan werden
-          $test_ifin = $db->write_query("SELECT stylesheet FROM " . TABLE_PREFIX . "themestylesheets WHERE tid = '{$theme['tid']}' AND name = 'scenetracker.css' AND stylesheet LIKE '%" . $update_string . "%' ");
+          $test_ifin = $db->write_query("SELECT stylesheet FROM " . TABLE_PREFIX . "themestylesheets WHERE tid = '{$theme['tid']}' AND name = 'jobliste.css' AND stylesheet LIKE '%" . $update_string . "%' ");
           //string war nicht vorhanden
           if ($db->num_rows($test_ifin) == 0) {
             echo ("Mindestens Theme {$theme['tid']} muss aktualisiert werden <br>");
@@ -1591,7 +1591,7 @@ function jobliste_is_updated()
 
   //Testen ob eins der Templates aktualisiert werden muss
   //Wir wollen erst einmal die templates, die eventuellverändert werden müssen
-  $update_template_all = scenetracker_updated_templates();
+  $update_template_all = jobliste_updated_templates();
   //alle themes durchgehen
   foreach ($update_template_all as $update_template) {
     //entsprechendes Tamplate holen
@@ -1599,15 +1599,15 @@ function jobliste_is_updated()
     while ($old_template = $db->fetch_array($old_template_query)) {
       //pattern bilden
       if ($update_template['action'] == 'replace') {
-        $pattern = scenetracker_createRegexPattern($update_template['change_string']);
+        $pattern = jobliste_createRegexPattern($update_template['change_string']);
         $check = preg_match($pattern, $old_template['template']);
       } elseif ($update_template['action'] == 'add') {
         //bei add wird etwas zum template hinzugefügt, wir müssen also testen ob das schon geschehen ist
-        $pattern = scenetracker_createRegexPattern($update_template['action_string']);
+        $pattern = jobliste_createRegexPattern($update_template['action_string']);
         $check = !preg_match($pattern, $old_template['template']);
       } elseif ($update_template['action'] == 'overwrite') {
         //checken ob das bei change string angegebene vorhanden ist - wenn ja wurde das template schon überschrieben
-        $pattern = scenetracker_createRegexPattern($update_template['change_string']);
+        $pattern = jobliste_createRegexPattern($update_template['change_string']);
         $check = !preg_match($pattern, $old_template['template']);
       }
       //testen ob der zu ersetzende string vorhanden ist
