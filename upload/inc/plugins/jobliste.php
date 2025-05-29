@@ -1565,8 +1565,8 @@ function jobliste_is_updated()
     $templatequery = $db->write_query("SELECT * FROM `" . TABLE_PREFIX . "themestylesheets` where tid = '{$theme['tid']}' and name ='jobliste.css'");
     //jobliste.css ist in keinem style nicht vorhanden
     if ($db->num_rows($templatequery) == 0) {
-      echo ("Nicht im {$theme['tid']} vorhanden <br>");
-      return false;
+//      echo ("Nicht im Theme mit der id {$theme['tid']} vorhanden <br>");
+//      return false;
     } else {
       //jobliste.css ist in einem style nicht vorhanden
       //css ist vorhanden, testen ob alle updatestrings vorhanden sind
