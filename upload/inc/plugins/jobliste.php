@@ -367,7 +367,7 @@ function jobliste_main()
         $hauptkategorie_edit .= "</select>";
 
 
-        $overcat = $subcat_over['jc_name'];
+        $overcat = $subcat_over['jc_title'];
         $overcat_sort = $subcat_over['jc_sort'];
         $jobliste_bit_edit_overcat = "";
         if ($mybb->usergroup['canmodcp'] == 1) {
